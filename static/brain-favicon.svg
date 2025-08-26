@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="brainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Brain main body -->
+  <path d="M32 8C24 8 18 12 16 18C14 16 12 16 10 18C8 20 8 24 10 26C8 28 8 32 12 34C10 36 10 40 14 42C12 44 12 48 16 50C18 54 24 56 32 56C40 56 46 54 48 50C52 48 52 44 50 42C54 40 54 36 52 34C56 32 56 28 54 26C56 24 56 20 54 18C52 16 50 16 48 18C46 12 40 8 32 8Z" fill="url(#brainGradient)" stroke="#4a5568" stroke-width="1"/>
+  
+  <!-- Left hemisphere -->
+  <path d="M16 20C18 18 20 20 22 22C24 20 26 22 28 24C30 22 32 24 32 26L32 48C30 50 28 48 26 46C24 48 22 46 20 44C18 46 16 44 16 42L16 20Z" fill="none" stroke="#4a5568" stroke-width="0.8" opacity="0.6"/>
+  
+  <!-- Right hemisphere -->
+  <path d="M48 20C46 18 44 20 42 22C40 20 38 22 36 24C34 22 32 24 32 26L32 48C34 50 36 48 38 46C40 48 42 46 44 44C46 46 48 44 48 42L48 20Z" fill="none" stroke="#4a5568" stroke-width="0.8" opacity="0.6"/>
+  
+  <!-- Brain folds/wrinkles -->
+  <path d="M20 24C22 26 24 24 26 28C28 26 30 30 32 28" fill="none" stroke="#4a5568" stroke-width="0.6" opacity="0.7"/>
+  <path d="M34 28C36 30 38 26 40 28C42 24 44 26 44 24" fill="none" stroke="#4a5568" stroke-width="0.6" opacity="0.7"/>
+  <path d="M18 32C20 34 22 32 24 36C26 34 28 36 30 34" fill="none" stroke="#4a5568" stroke-width="0.6" opacity="0.7"/>
+  <path d="M34 34C36 36 38 34 40 36C42 32 44 34 46 32" fill="none" stroke="#4a5568" stroke-width="0.6" opacity="0.7"/>
+  <path d="M20 40C22 42 24 40 26 44C28 42 30 44 32 42" fill="none" stroke="#4a5568" stroke-width="0.6" opacity="0.7"/>
+  <path d="M32 42C34 44 36 42 38 44C40 40 42 42 44 40" fill="none" stroke="#4a5568" stroke-width="0.6" opacity="0.7"/>
+  
+  <!-- Neural connection dots -->
+  <circle cx="22" cy="26" r="1" fill="#ffffff" opacity="0.8"/>
+  <circle cx="28" cy="32" r="1" fill="#ffffff" opacity="0.8"/>
+  <circle cx="36" cy="30" r="1" fill="#ffffff" opacity="0.8"/>
+  <circle cx="42" cy="36" r="1" fill="#ffffff" opacity="0.8"/>
+  <circle cx="26" cy="42" r="1" fill="#ffffff" opacity="0.8"/>
+  <circle cx="38" cy="44" r="1" fill="#ffffff" opacity="0.8"/>
+</svg>

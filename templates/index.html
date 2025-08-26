@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Network Analyzer</title>
+    <meta name="description" content="Professional tool for analyzing CNN architectures with receptive field calculation and visualization">
+    <meta name="keywords" content="neural network, CNN, deep learning, architecture analyzer, receptive field, visualization">
+    <meta name="author" content="Neural Network Analyzer">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/static/brain-favicon.svg">
+    <link rel="alternate icon" href="/static/brain-favicon.ico">
+    <link rel="apple-touch-icon" sizes="32x32" href="/static/brain-favicon.ico">
+    
+    <!-- Theme color for mobile browsers -->
+    <meta name="theme-color" content="#007bff">
+    
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/static/manifest.json">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-primary">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">
+                <i class="fas fa-brain"></i> Neural Network Analyzer
+            </span>
+        </div>
+    </nav>
+
+    <div class="container-fluid main-container">
+        <div class="row h-100">
+            <!-- Left Panel - Configuration -->
+            <div class="col-md-4 sidebar">
+                <div class="card compact-card">
+                    <div class="card-header">
+                        <h6><i class="fas fa-cog"></i> Network Builder</h6>
+                    </div>
+                    <div class="card-body compact-body">
+                        <!-- Compact Input Shape -->
+                        <div class="config-section">
+                            <div class="section-header" data-bs-toggle="collapse" data-bs-target="#inputShapeSection" aria-expanded="true">
+                                <span class="section-title"><i class="fas fa-image"></i> Input Shape</span>
+                                <i class="fas fa-chevron-down toggle-icon"></i>
+                            </div>
+                            <div class="collapse show" id="inputShapeSection">
+                                <form id="inputShapeForm" class="compact-form">
+                                    <div class="input-group input-group-sm">
+                                        <input type="number" class="form-control" id="height" name="height" value="224" min="1" placeholder="H">
+                                        <span class="input-group-text">×</span>
+                                        <input type="number" class="form-control" id="width" name="width" value="224" min="1" placeholder="W">
+                                        <span class="input-group-text">×</span>
+                                        <input type="number" class="form-control" id="channels" name="channels" value="3" min="1" placeholder="C">
+                                        <button type="submit" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Compact Layer Addition -->
+                        <div class="config-section">
+                            <div class="section-header" data-bs-toggle="collapse" data-bs-target="#addLayerSection" aria-expanded="true">
+                                <span class="section-title"><i class="fas fa-layer-group"></i> Add Layer</span>
+                                <i class="fas fa-chevron-down toggle-icon"></i>
+                            </div>
+                            <div class="collapse show" id="addLayerSection">
+                                <form id="layerForm" class="compact-form">
+                                    <select class="form-select form-select-sm mb-2" id="layerType" name="layer_type" required>
+                                        <option value="">Select layer...</option>
+                                        <optgroup label="Feature">
+                                            <option value="conv2d">Conv2D</option>
+                                            <option value="maxpool2d">MaxPool2D</option>
+                                            <option value="avgpool2d">AvgPool2D</option>
+                                            <option value="globalavgpool2d">GlobalAvgPool2D</option>
+                                        </optgroup>
+                                        <optgroup label="Regularization">
+                                            <option value="batchnorm">BatchNorm</option>
+                                            <option value="dropout">Dropout</option>
+                                        </optgroup>
+                                        <optgroup label="Other">
+                                            <option value="flatten">Flatten</option>
+                                            <option value="dense">Dense</option>
+                                            <option value="activation">Activation</option>
+                                        </optgroup>
+                                    </select>
+                                    <div id="layerParameters"></div>
+                                    <button type="submit" class="btn btn-success btn-sm w-100">
+                                        <i class="fas fa-plus"></i> Add
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Compact Problem Configuration -->
+                        <div class="config-section">
+                            <div class="section-header" data-bs-toggle="collapse" data-bs-target="#problemSection" aria-expanded="false">
+                                <span class="section-title"><i class="fas fa-target"></i> Output Config</span>
+                                <i class="fas fa-chevron-right toggle-icon"></i>
+                            </div>
+                            <div class="collapse" id="problemSection">
+                                <form id="problemForm" class="compact-form">
+                                    <select class="form-select form-select-sm mb-2" id="problemType" name="problem_type">
+                                        <option value="">Problem type...</option>
+                                        <option value="classification">Classification</option>
+                                        <option value="binary_classification">Binary</option>
+                                        <option value="regression">Regression</option>
+                                    </select>
+                                    <div id="problemParameters" style="display: none;">
+                                        <input type="number" class="form-control form-control-sm mb-2" id="numClasses" name="num_classes" min="2" placeholder="# Classes">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-sm w-100">
+                                        <i class="fas fa-magic"></i> Configure
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Compact Management -->
+                        <div class="config-section">
+                            <div class="btn-group w-100" role="group">
+                                <button id="clearLayers" class="btn btn-outline-warning btn-sm">
+                                    <i class="fas fa-trash"></i> Clear
+                                </button>
+                                <button id="exportArchitecture" class="btn btn-outline-info btn-sm">
+                                    <i class="fas fa-download"></i> Export
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Compact Network Summary -->
+                <div class="card mt-2 compact-card">
+                    <div class="card-header">
+                        <h6><i class="fas fa-chart-bar"></i> Summary</h6>
+                    </div>
+                    <div class="card-body compact-body">
+                        <div id="networkSummary">
+                            <div class="summary-grid">
+                                <div class="summary-item-compact">
+                                    <span class="summary-label-compact">Layers:</span>
+                                    <span class="summary-value-compact" id="totalLayers">0</span>
+                                </div>
+                                <div class="summary-item-compact">
+                                    <span class="summary-label-compact">Params:</span>
+                                    <span class="summary-value-compact" id="totalParams">0</span>
+                                </div>
+                                <div class="summary-item-compact">
+                                    <span class="summary-label-compact">Input:</span>
+                                    <span class="summary-value-compact" id="inputShape">224×224×3</span>
+                                </div>
+                                <div class="summary-item-compact">
+                                    <span class="summary-label-compact">Output:</span>
+                                    <span class="summary-value-compact" id="outputShape">224×224×3</span>
+                                </div>
+                                <div class="summary-item-compact full-width">
+                                    <span class="summary-label-compact">RF:</span>
+                                    <span class="summary-value-compact" id="receptiveField">1</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel - Visualization and Analysis -->
+            <div class="col-md-8 main-content">
+                <!-- Current Layers -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5><i class="fas fa-layer-group"></i> Current Layers</h5>
+                        <button id="generateDiagram" class="btn btn-primary">
+                            <i class="fas fa-image"></i> Generate Architecture Diagram
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="layersList">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-info-circle"></i> No layers added yet. Start by adding layers from the left panel.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Architecture Diagram -->
+                <div class="card mt-3" id="diagramCard" style="display: none;">
+                    <div class="card-header">
+                        <h5><i class="fas fa-project-diagram"></i> Architecture Diagram</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <div id="diagramContainer">
+                            <div class="spinner-border text-primary" role="status" id="diagramSpinner" style="display: none;">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <img id="architectureDiagram" class="img-fluid" style="display: none;" alt="Architecture Diagram">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Analysis Table -->
+                <div class="card mt-3" id="analysisCard" style="display: none;">
+                    <div class="card-header">
+                        <h5><i class="fas fa-table"></i> Detailed Analysis</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="analysisTable"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast for notifications -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">Neural Network Analyzer</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="toastMessage">
+                <!-- Toast message will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
