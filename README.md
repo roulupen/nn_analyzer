@@ -30,6 +30,140 @@ uv sync
 python main.py
 ```
 
+## Running on AWS EC2 (Ubuntu)
+
+This section provides step-by-step instructions for deploying the Neural Network Analyzer on an AWS EC2 instance running Ubuntu.
+
+### 1. Create an EC2 Instance
+
+1. Log into your AWS Console
+2. Navigate to EC2 service
+3. Click "Launch Instance"
+4. Choose "Ubuntu Server 22.04 LTS" (or latest LTS version)
+5. Select an appropriate instance type (t2.micro for testing, t2.small or larger for production)
+6. Configure security groups (we'll add inbound rules later)
+7. Launch the instance and download your `.pem` key file
+
+### 2. Connect to Your EC2 Instance
+
+```bash
+# Save the .pem file in your working directory
+# Make sure the key file has the correct permissions
+chmod 400 aws-key.pem
+
+# Connect to your EC2 instance
+ssh -i /path/to/your-key.pem ubuntu@<EC2-Public-IP-or-DNS>
+```
+
+**Note:** Replace `/path/to/your-key.pem` with the actual path to your key file and `<EC2-Public-IP-or-DNS>` with your instance's public IP address or DNS name.
+
+### 3. Update Ubuntu System
+
+```bash
+# Update package lists
+sudo apt update
+
+# Upgrade all installed packages
+sudo apt upgrade -y
+```
+
+### 4. Install Python and uv
+
+```bash
+# Install Python 3.13+ (required by this project)
+sudo apt install software-properties-common
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt update
+sudo apt install python3.13 python3.13-venv python3.13-dev
+
+# Install uv package manager
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Restart shell or source profile
+source ~/.bashrc
+
+# Verify uv installation
+uv --version
+```
+
+### 5. Clone and Setup Your Project
+
+```bash
+# Clone your repository (if using git)
+git clone <your-repository-url>
+cd nn_analyzer
+
+# Or upload your project files using scp
+# From your local machine:
+# scp -i /path/to/your-key.pem -r /path/to/your/project ubuntu@<EC2-Public-IP>:/home/ubuntu/
+```
+
+### 6. Create Virtual Environment and Install Dependencies
+
+```bash
+# Create virtual environment
+python3.13 -m venv .venv
+
+# Activate it
+source .venv/bin/activate
+
+# Install dependencies using uv
+uv sync
+```
+
+### 7. Run the Application
+
+```bash
+# Use uv run for direct execution
+uv run python main.py
+```
+
+The application will start and listen on port 8000.
+
+### 8. Configure EC2 Security Group
+
+1. Go to EC2 Dashboard → Security Groups
+2. Select the security group associated with your instance
+3. Click "Edit inbound rules"
+4. Add a new rule:
+   - **Type**: Custom TCP
+   - **Port**: 8000
+   - **Source**: 0.0.0.0/0 (for public access) or your IP address for restricted access
+   - **Description**: Neural Network Analyzer Web App
+5. Click "Save rules"
+
+### 9. Access Your Application
+
+Open your web browser and navigate to:
+```
+http://<EC2-Public-IP>:8000
+```
+
+**Note:** Replace `<EC2-Public-IP>` with your actual EC2 instance's public IP address.
+
+### 10. Running in Background (Optional)
+
+To keep the application running after you disconnect from SSH:
+
+```bash
+# Use nohup to run in background
+nohup uv run python main.py > app.log 2>&1 &
+
+# Or use screen/tmux for better process management
+sudo apt install screen
+screen -S nn-analyzer
+uv run python main.py
+# Press Ctrl+A, then D to detach
+# Use 'screen -r nn-analyzer' to reattach
+```
+
+### Security Considerations
+
+- **Restrict Access**: Consider limiting the security group to only your IP address instead of 0.0.0.0/0
+- **HTTPS**: For production use, consider setting up HTTPS with a domain and SSL certificate
+- **Firewall**: Ensure your EC2 instance's firewall allows traffic on port 8000
+- **Updates**: Regularly update your Ubuntu system and Python packages
+
 ## Usage
 
 ### Starting the Application
