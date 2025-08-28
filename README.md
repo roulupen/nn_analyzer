@@ -70,11 +70,11 @@ sudo apt upgrade -y
 ### 4. Install Python and uv
 
 ```bash
-# Install Python 3.13+ (required by this project)
+# Install Python 3+ (required by this project)
 sudo apt install software-properties-common
 sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt update
-sudo apt install python3.13 python3.13-venv python3.13-dev
+sudo apt install python3 python3-venv python3-dev
 
 # Install uv package manager
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -102,7 +102,7 @@ cd nn_analyzer
 
 ```bash
 # Create virtual environment
-python3.13 -m venv .venv
+python3 -m venv .venv
 
 # Activate it
 source .venv/bin/activate
